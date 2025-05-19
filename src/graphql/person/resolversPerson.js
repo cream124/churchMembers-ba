@@ -128,6 +128,7 @@ const filterByStatePersons = async (state) => {
   return persons;
 };
 
+
 const getBirthday = async (persons, startDate, endDate ) => {
   const filteredPerson = persons.filter(function (per) {
     dayjs.extend(customParseFormat);
@@ -215,7 +216,7 @@ const filterPersons = async (filter) => {
   }
 
   
-  if (filter.searchType.includes("Text")) {
+  if (filter.searchType?.includes("Text")) {
     filter[filter.field] = regex;
     console.log('=filter=text======', filter);
     return Person.find( filter);
@@ -235,7 +236,7 @@ const filterPersons = async (filter) => {
     // return Person.find( filter);
   }
 
-  if (filter.searchType.includes("betweenDates")) {
+  if (filter.searchType?.includes("betweenDates")) {
     const persons = await Person.find(filter);
     console.log('=filter=birthdate======', filter);
     return getBetweenDates(persons, filter.startDate, filter.endDate, filter.field)
@@ -244,7 +245,7 @@ const filterPersons = async (filter) => {
     // return Person.find( filter);
   }
 
-  if (filter.searchType.includes("betweenAge")) {
+  if (filter.searchType?.includes("betweenAge")) {
     const persons = await Person.find(filter);
     console.log('=filter=age======', filter);
     return getBetweenAge(persons, filter.startDate, filter.endDate, filter.field);
@@ -366,6 +367,17 @@ module.exports = {
       // return filterByStatePersons({state});
       // return filterByStatePersons({state, registerId: context._id});
 
+    },
+    getPersons(obj, { filter }, context) {
+      console.log('------', filter);
+      console.log('resolver-contex.isAuth-ABN----------', context.isAuth);
+      // if (!context.isAuth) {
+      //   throw new Error('Unauthenticated')
+      // }
+      // if (context.level === 700) {
+      //   return personFunctions.getPersons(filter);
+      // }
+      return personFunctions.getPersons(filter);
     },
 
     filterPersons(obj, { filter }, context) {

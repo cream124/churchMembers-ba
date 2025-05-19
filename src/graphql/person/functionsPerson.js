@@ -1,6 +1,7 @@
 const ObjectId = require('mongodb').ObjectId;
 const { UserInputError } = require('apollo-server');
 const Person = require('../../models/person');
+const DateUtil = require('../../utility/dateUtil')
 const membershipFunctions = require('../membership/functionsMembership');
 
 const bcrypt = require("bcryptjs");
@@ -152,23 +153,23 @@ const updatePerson = async (_id, name, lastName, motherLastName, birthDate, gend
 };
 
 const updateSpirtualPerson = async (_id, becameMemberFor, becameMembreDate, libroN, folioN, membershipRegistrationDate, membershipRegistrationTime) => {
-    await Person.updateOne({ _id },
-      {
-        $set: {
-          spiritual: { becameMemberFor, becameMembreDate, libroN, folioN, membershipRegistrationDate, membershipRegistrationTime},
-        }
+  await Person.updateOne({ _id },
+    {
+      $set: {
+        spiritual: { becameMemberFor, becameMembreDate, libroN, folioN, membershipRegistrationDate, membershipRegistrationTime },
       }
-    );
+    }
+  );
 
   return await Person.findOne({ _id });
 };
 
 const updatePassword = async (_id, oldPassword, newPassword) => {
-  
+
   const user = await Person.findOne({ _id });
 
   if (user && (await bcrypt.compare(oldPassword, user.password))) {
-    const password =  await bcrypt.hash(newPassword, 10);
+    const password = await bcrypt.hash(newPassword, 10);
     await Person.updateOne({ _id },
       {
         $set: {
@@ -186,8 +187,8 @@ const updatePassword = async (_id, oldPassword, newPassword) => {
 };
 
 const updateUserPerson = async (_id, user, email, level, password1) => {
-  
-  
+
+
   const password = password1 ? await bcrypt.hash(password1, 10) : undefined;
   if (email) {
     await validateEmail(email, true, _id);
@@ -200,7 +201,7 @@ const updateUserPerson = async (_id, user, email, level, password1) => {
     }
   );
 
-return await Person.findOne({ _id });
+  return await Person.findOne({ _id });
 };
 
 const filterByStatePersons = async (state) => {
@@ -306,21 +307,118 @@ const deletePerson = async (_id) => {
   await Person.remove({ _id });
   return user;
 };
+const getFilterPersons = async (filter) => {
+  const regex = new RegExp(["", filter.value, ""].join(""), "i");
+
+  if (filter.searchType === "names") {
+    const nameFilter = {
+      $or: [{ name: regex }, { lastName: regex }]
+    }
+    return nameFilter;
+  }
+  if (filter.searchType?.includes("Text")) {
+    const fi = {};
+    fi[filter.field] = regex;
+    console.log('=filter=text======', fi);
+    return fi;
+  }
+  if (filter.searchType === "bool") {
+    const fi = {};
+    fi[filter.field] = filter.value;
+    // console.log('=filter=text======', fil);
+    return fi;
+  }
+  return {};
+};
+const getBirthday = async (persons, startDate, endDate) => {
+  const filteredPerson = persons.filter(function (per) {
+    dayjs.extend(customParseFormat);
+    let fe = dayjs(per.birthDate);
+    const fe1 = dayjs(startDate, 'DD-MM-YYYY');
+    let fe2 = dayjs(endDate, 'DD-MM-YYYY');
+    const year = fe1.year();
+    fe = fe.year(year);
+    fe2 = fe2.year(year);
+    return fe >= fe1 && fe2 >= fe
+  });
+  return filteredPerson;
+};
+
+const getBetweenDates = async (persons, startDate, endDate, field ) => {
+  const filteredPerson = persons.filter(function (per) {
+    dayjs.extend(customParseFormat);
+    let fe = dayjs(per[field]);
+    const fe1 = dayjs(startDate, 'DD-MM-YYYY');
+    let fe2 = dayjs(endDate, 'DD-MM-YYYY');
+    // const year = fe1.year();
+    // fe = fe.year(year);
+    // fe2 = fe2.year(year);
+    return fe >= fe1 && fe2 >= fe
+  });
+  return filteredPerson;
+}
+
+const getBetweenAge = async (persons, startDate, endDate, field ) => {
+  const filteredPerson = await persons.filter( function (per) {
+    const age=  DateUtil.getAge(per[field]);
+    // console.log('---age-------', age)
+    const fe1 = parseInt(startDate);
+    let fe2 = parseInt(endDate);
+    return age >= fe1 && fe2 >= age
+  });
+  return filteredPerson;
+}
+
+
+const personsDataFilter = async (persons, filter) => {
+  if (filter.searchType === "birthdate") {
+    return getBirthday(persons, filter.startDate, filter.endDate)
+  }
+  if (filter.searchType?.includes("betweenDates")) {
+    return getBetweenDates(persons, filter.startDate, filter.endDate, filter.field)
+  }
+
+  if (filter.searchType?.includes("betweenAge")) {
+    return getBetweenAge(persons, filter.startDate, filter.endDate, filter.field);
+  }
+  return persons;
+};
+
+
+const getPersons = async (filter) => {
+  // const persons = await Person.find({...filter});
+  // return persons;
+  const nameFilter = await getFilterPersons(filter);
+  let person = {};
+  const metadata = {};
+  if (filter?.page >= 0) {
+    metadata.totalCount = await Person.count({ ...nameFilter, ...filter });
+    metadata.page = filter.page;
+    metadata.pageSize = filter.pageSize;
+    if (filter.pageSize >= 0) {
+      person = await Person.find({ ...nameFilter, ...filter }).sort({ "name": 1 }).skip(filter.page * filter.pageSize).limit(filter.pageSize);
+    } else {
+      person = await Person.find({ ...nameFilter, ...filter }).sort({ "name": 1 });
+    }
+  } else {
+    person = await Person.find({ ...nameFilter, ...filter });
+  }
+
+  person = await personsDataFilter(person, filter);
+
+  return { data: person, metadata };
+
+};
+
 
 
 module.exports = {
   addPerson,
   getAPerson,
-  updatePerson, 
+  updatePerson,
   updateSpirtualPerson,
   updateUserPerson,
   updatePassword,
-  deletePerson
-    // getAllMemberships,
-  // getMemberships,
-  // getMembershipActive,
-  // getCustomeMembership,
-  // addMembership,
-  // updateMembership,
-  // deleteMembership,
+  deletePerson,
+  getPersons
 };

@@ -156,6 +156,29 @@ module.exports = gql`
     field: String
     value: String
   }
+  type Persons {
+    data: [Person],
+    metadata: MetaData,
+  }
+  
+  type MetaData {
+    totalCount: Int,
+    page: Int,
+    pageSize: Int,
+  }
+
+  input PersonFilter {
+    searchType: String  
+    state: String
+    startDate: String
+    endDate: String
+    field: String
+    value: String
+    day: Int
+    page: Int
+    pageSize: Int
+  }
+
 
   input RegisterPerson {
     name: String
@@ -172,6 +195,7 @@ module.exports = gql`
   type Query {
     persons: [Person]
     filterByStatePersons(state: String): [Person]
+    getPersons(filter: PersonFilter): Persons
     filterPersons(filter: Filter): [Person]
     person(id: String): Person
   }

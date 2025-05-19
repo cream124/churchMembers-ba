@@ -2,7 +2,7 @@
 function getRootData() {
   const data = [
     {
-      "name": "Abner",
+        "name": "Abner",
         "lastName": "Mamani",
         "motherLastName": "Loka",
         "birthDate": "1974-07-11T00:00:00Z",
