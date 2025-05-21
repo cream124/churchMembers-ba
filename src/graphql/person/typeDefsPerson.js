@@ -20,8 +20,10 @@ module.exports = gql`
     registerDate: String
     registerName: String
     updateId: String
+    updateName: String
     updateDate: String
     approvalId: String
+    approvalName: String
     approvalDate: String
     user: Boolean
     level: Int
@@ -231,6 +233,8 @@ module.exports = gql`
       state: String
       approvalId: String
       approvalDate: String
+      updateId: String
+      updateDate: String
     ): Person
 
     updatePerson(

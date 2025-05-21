@@ -290,13 +290,15 @@ const filterPersons = async (filter) => {
   return filteredPerson;
 };
 
-const updateState = async (ids, state, approvalId, approvalDate) => {
+const updateState = async (ids, state, approvalId, approvalDate, updateId, updateDate) => {
   for (const _id of ids) {
     await Person.updateOne({ _id }, {
       $set: {
         state,
         approvalId,
-        approvalDate
+        approvalDate,
+        updateId, 
+        updateDate
       }
 
     });
@@ -402,6 +404,14 @@ module.exports = {
       const p = await personFunctions.getAPerson(person.registerId);
       return p.name ? p.name : '-';
     },
+    approvalName: async (person) => {
+      const p = await personFunctions.getAPerson(person.approvalId);
+      return p.name ? `${p.name} ${p.lastName}` : '-';
+    },
+    updateName: async (person) => {
+      const p = await personFunctions.getAPerson(person.updateId);
+      return p.name ? `${p.name} ${p.lastName}` : '-';
+    },
     password: async () => {
       return '';
     },
@@ -425,8 +435,8 @@ module.exports = {
       return personFunctions.addPerson(name, lastName, motherLastName, birthDate, gender, civilStatus, ci, photo, phone, address, location, state, email, registerId, registerDate, approvalId, approvalDate, user, level, userName, password, spiritual, legal);
       // return addPerson(name, lastName, motherLastName, birthDate, gender, civilStatus, ci, photo, phone, address, location, state, email, registerId, registerDate, approvalId, approvalDate, user, level, userName, password, spiritual, legal);
     },
-    updateStatePerson(obj, { ids, state, approvalId, approvalDate }, context) {
-      return updateState(ids, state, approvalId, approvalDate);
+    updateStatePerson(obj, { ids, state, approvalId, approvalDate, updateId, updateDate }, context) {
+      return updateState(ids, state, approvalId, approvalDate, updateId, updateDate);
     },
 
     updatePerson(obj, { id, name, lastName, motherLastName, birthDate, gender, civilStatus,
