@@ -175,6 +175,8 @@ module.exports = gql`
     startDate: String
     endDate: String
     field: String
+    toDate: Boolean
+    registerId: String
     value: String
     day: Int
     page: Int
