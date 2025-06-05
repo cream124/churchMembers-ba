@@ -69,13 +69,15 @@ const updateMembership = async (
   registerDate
 ) => {
   const membershipActive = await getMembershipActive(idPerson);
-  const _id = membershipActive._id;
-  const state = "inactive";
-  await Membership.updateOne({_id}, {
-    $set: {
-      state
-    }
-  });
+  if(membershipActive) {
+    const _id = membershipActive._id;
+    const state = "inactive";
+    await Membership.updateOne({_id}, {
+      $set: {
+        state
+      }
+    });
+  }
   return addMembership(idPerson, type, description, updateDate, idRegister, registerDate);
 };
 
