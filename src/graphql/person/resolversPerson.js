@@ -440,11 +440,11 @@ module.exports = {
     },
 
     updatePerson(obj, { id, name, lastName, motherLastName, birthDate, gender, civilStatus,
-      ci, photo, phone, address, location, state, email, uptadeId, updateDate, user,
+      ci, photo, phone, address, location, state, email, updateId, updateDate, user,
       userName, password, updatingUser, spiritual, legal }, context) {
       console.log('------', name);
       return personFunctions.updatePerson(id, name, lastName, motherLastName, birthDate, gender, civilStatus,
-        ci, photo, phone, address, location, state, email, uptadeId, updateDate, user,
+        ci, photo, phone, address, location, state, email, updateId, updateDate, user,
         userName, password, updatingUser, spiritual, legal);
     },
 

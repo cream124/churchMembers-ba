@@ -72,7 +72,7 @@ const validateEmail = async (email, user, id) => {
 const addPerson = async (name, lastName, motherLastName, birthDate, gender, civilStatus, ci, photo, phone, address, location, state, email, registerId, registerDate, approvalId, approvalDate, user, level, userName, password, spiritual, legal) => {
   console.log('=sp==========', spiritual);
   await validateNames(name, lastName, motherLastName);
-  // await validateCi(ci);
+  await validateCi(ci);
   await validateEmail(email, user);
 
   var encryptedPassword = await bcrypt.hash(password, 10);
@@ -118,7 +118,7 @@ const addPerson = async (name, lastName, motherLastName, birthDate, gender, civi
 };
 
 const updatePerson = async (_id, name, lastName, motherLastName, birthDate, gender, civilStatus,
-  ci, photo, phone, address, location, state, email, uptadeId, updateDate, user,
+  ci, photo, phone, address, location, state, email, updateId, updateDate, user,
   userName, password, updatingUser, spiritual, legal) => {
 
   await validateNames(name, lastName, motherLastName, _id);
@@ -133,7 +133,7 @@ const updatePerson = async (_id, name, lastName, motherLastName, birthDate, gend
       {
         $set: {
           name, lastName, motherLastName, birthDate, gender, civilStatus,
-          ci, photo, phone, address, location, state, email, uptadeId, updateDate, user,
+          ci, photo, phone, address, location, state, email, updateId, updateDate, user,
           userName, password, spiritual, legal
         }
       }
@@ -143,7 +143,7 @@ const updatePerson = async (_id, name, lastName, motherLastName, birthDate, gend
       {
         $set: {
           name, lastName, motherLastName, birthDate, gender, civilStatus,
-          ci, photo, phone, address, location, state, uptadeId, updateDate, user,
+          ci, photo, phone, address, location, state, updateId, updateDate, user,
           userName, spiritual, legal
         }
       }
