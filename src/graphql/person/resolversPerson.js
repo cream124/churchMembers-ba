@@ -172,6 +172,13 @@ const filterPersons = async (filter) => {
   /**
    * searchType: names, text, bool  {"field": "spiritual.christian", "value": "false"}
    */
+  if(filter.state === 'all'){
+    const allCondition = {
+      $or: [ { state: 'active' }, { state: 'registered' } ]
+    }
+    delete filter.state;
+    filter = {...filter, ...allCondition}
+  }
   console.log('=persons=00======', filter);
   // const filter = {
   //   "state": "registered",
@@ -383,7 +390,7 @@ module.exports = {
     },
 
     filterPersons(obj, { filter }, context) {
-      console.log('------', filter);
+      // console.log('------', filter);
       // console.log('resolver-contex.isAuth-----------', context.isAuth);
       // if (!context.isAuth) {
       //   throw new Error('Unauthenticated')
