@@ -8,7 +8,7 @@ const peopleLegalData = require('../../data/PeopleLegalData');
 
 const loadRootPerson = async (_id) => {
   const data = peopleData.getRootData();
-  // console.log('------', data);
+  // console.log('--data----', data);
   const created = [];
   for (const comp of data) {
     const { name, lastName, motherLastName, birthDate,

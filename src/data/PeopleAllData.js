@@ -15,7 +15,7 @@ function getAllData() {
         "address": "Hostital del sur",
         "location": "https://www.google.com/maps/place/Cream+office/@-17.4542131,-66.1535126,17z/data=!3m1!4b1!4m6!3m5!1s0x93e373db1fa15d9f:0xf33b6ce4805eaba3!8m2!3d-17.4542182!4d-66.1509377!16s%2Fg%2F11qqf23q60?entry=ttu&g_ep=EgoyMDI0MDkzMC4wIKXMDSoASAFQAw%3D%3D",
         "state": "active",
-        "email": "abner1@gmail.com",
+        "email": "abner@gmail.com",
         "registerId": "",
         "registerDate": "2024-10-02T23:07:05-04:00",
         "approvalId": "",
@@ -23,7 +23,7 @@ function getAllData() {
         "user": true,
         "level": "700",
         "userName": "hola",
-        "password": "hola",
+        "password": "abner",
         "spiritual": "1",
         "legal": "1"
     },
